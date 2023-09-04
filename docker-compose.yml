@@ -30,7 +30,7 @@ services:
         ports:
             - 8320:5432
         volumes:
-            - order-db-data:/var/lib/postgresql/data/
+            - ./order-db-data:/var/lib/postgresql/data/
         command: ["postgres", "-c", "logging_collector=on", "-c", "log_destination=stderr", "-c", "max_connections=50000"]
     order_test_DB:
         image: postgres:11.12
@@ -41,8 +41,5 @@ services:
         ports:
             - 8321:5432
         volumes:
-            - order-test-db-data:/var/lib/postgresql/data/
+            - ./order-test-db-data:/var/lib/postgresql/data/
         command: ["postgres", "-c", "logging_collector=on", "-c", "log_destination=stderr", "-c", "max_connections=50000"]
-volumes:
-    order-db-data:
-    order-test-db-data:
