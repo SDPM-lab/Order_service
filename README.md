@@ -14,4 +14,4 @@ Demo service in microservice architecture
 `docker-compose exec order-service php spark migrate`
 
 ## 可用 API
-請參考根目錄下的 `` 檔案，將可使用的 API 匯入 Postman 中。
+請參考根目錄下的 `Order Service.postman_collection.json` 檔案，將可使用的 API 匯入 Postman 中。
