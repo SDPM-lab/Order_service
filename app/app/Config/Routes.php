@@ -54,7 +54,6 @@ $routes->group(
         $routes->get('order', 'OrderController::index');
         $routes->get('order/(:segment)', 'OrderController::show/$1');
         $routes->post('order', 'OrderController::create');
-        $routes->put('order', 'OrderController::update');
         $routes->delete('order/(:segment)', 'OrderController::delete/$1');
         $routes->get('/', 'Home::index');
     }
@@ -70,7 +69,6 @@ $routes->group(
         $routes->post('order/list', 'OrderController::index');
         $routes->post('order/show', 'OrderController::show');
         $routes->post('order/create', 'OrderController::create');
-        $routes->post('order/update', 'OrderController::update');
         $routes->post('order/delete', 'OrderController::delete');
     }
 );

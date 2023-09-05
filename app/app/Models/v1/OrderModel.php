@@ -16,7 +16,7 @@ class OrderModel extends Model
     protected $returnType       = OrderEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['u_key','discount'];
+    protected $allowedFields    = ['u_key','ext_price'];
 
     // Dates
     protected $useTimestamps = true;
@@ -47,22 +47,20 @@ class OrderModel extends Model
      *
      * @param string $o_key
      * @param integer $u_key
-     * @param integer $discount
      * @param array $productDetailArr
      * @return integer|null
      */
-    public function createOrderTranscation(string $o_key, int $u_key, int $discount, array $productDetailArr): ?int
+    public function createOrderTranscation(string $o_key, int $u_key, array $productDetailArr): ?int
     {
         $total      = 0;
         $now        = date("Y-m-d H:i:s");
         $orderData  = [
             "o_key"      => $o_key,
             "u_key"      => $u_key,
-            "discount"   => $discount,
+            "ext_price"   => 0,
             "created_at" => $now,
             "updated_at" => $now
         ];
-        
 
         try {
             $this->db->transStart();
@@ -75,17 +73,21 @@ class OrderModel extends Model
                     "o_key"      => $o_key,
                     "p_key"      => $product["p_key"],
                     "price"      => $product["price"],
+                    "amount"     => $product["amount"],
                     "created_at" => $now,
                     "updated_at" => $now
                 ];
 
-                $total += $product["price"];
+                $data['ext_price'] = $data['price'] * $data['amount'];
+                $total += $data['ext_price'];
 
                 $this->db->table("order_product")
                          ->insert($data);
             }
             
-            $total -= $orderData["discount"];
+            $this->db->table("order")
+                     ->where("o_key",$o_key)
+                     ->update(["ext_price" => $total]);
 
             $result = $this->db->transComplete();
 
