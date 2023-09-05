@@ -23,6 +23,16 @@ class OrderProduct extends Migration
                 'constraint'     => 5,
                 'unsigned'       => TRUE
             ],
+            'amount'           => [
+                'type'           => 'INT',
+                'constraint'     => 5,
+                'unsigned'       => TRUE
+            ],
+            'ext_price'           => [
+                'type'           => 'INT',
+                'constraint'     => 5,
+                'unsigned'       => TRUE
+            ],
             "created_at"    => [
                 'type'           => 'datetime'
             ],

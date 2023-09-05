@@ -13,8 +13,5 @@ Demo service in microservice architecture
 ### 初始化資料庫
 `docker-compose exec order-service php spark migrate`
 
-### 執行資料表資料填充
-`docker-compose exec order-service php spark db:seed Order`
-
 ## 可用 API
 請參考根目錄下的 `` 檔案，將可使用的 API 匯入 Postman 中。

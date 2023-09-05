@@ -26,7 +26,9 @@ class OrderProductBusinessLogic
             foreach ($orderProductEntity as $orderProdcuts) {
                 $orderProdcut = [
                     "p_key" => $orderProdcuts->p_key,
-                    "price" => $orderProdcuts->price
+                    "price" => $orderProdcuts->price,
+                    "amount" => $orderProdcuts->amount,
+                    "ext_price" => $orderProdcuts->ext_price
                 ];
                 $data[] = $orderProdcut;
             }
@@ -55,6 +57,8 @@ class OrderProductBusinessLogic
                 $orderProductEntity->o_key = $o_key;
                 $orderProductEntity->p_key = $product["p_key"];
                 $orderProductEntity->price = $product["price"];
+                $orderProductEntity->amount = $product["amount"];
+                $orderProductEntity->ext_price = $product["ext_price"];
 
                 $orderProductModel->insert($orderProductEntity->toRawArray(true));
             } else {
@@ -63,38 +67,6 @@ class OrderProductBusinessLogic
                 return $result;
             }
         }
-        return $result;
-    }
-
-    /**
-     * 更新商品陣列
-     *
-     * @param string $o_key
-     * @param array $productDetailArr
-     * @return boolean
-     */
-    static function update(string $o_key, array $productDetailArr): bool
-    {
-        $orderProductModel = new OrderProductModel();
-
-        $orderProductModel->where('o_key', $o_key)
-                          ->delete();
-
-        return static::createOrderProduct($o_key, $productDetailArr);
-    }
-
-    /**
-     * 刪除訂單商品
-     *
-     * @param string $o_key
-     * @return bool
-     */
-    static function delete(string $o_key): bool
-    {
-        $orderProductModel = new OrderProductModel();
-
-        $result = $orderProductModel->where('o_key', $o_key)->delete();
-
         return $result;
     }
 

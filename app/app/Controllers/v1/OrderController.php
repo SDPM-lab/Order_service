@@ -26,7 +26,6 @@ class OrderController extends BaseController
      * [GET] /api/v1/order
      * 取得所有的訂單清單
      *
-     * @return void
      */
     public function index()
     {
@@ -51,7 +50,7 @@ class OrderController extends BaseController
             foreach ($orders as $orderEntity) {
                 $orderData = [
                     "u_key"     => $orderEntity->u_key,
-                    "discount"  => $orderEntity->discount,
+                    "ext_prive"  => $orderEntity->ext_price,
                     "createdAt" => $orderEntity->createdAt,
                     "updatedAt" => $orderEntity->updatedAt
                 ];
@@ -68,10 +67,9 @@ class OrderController extends BaseController
     }
 
     /**
-     * [GET] /api/v1/order/order/{orderKey}
+     * [GET] /api/v1/order/{orderKey}
      * 取得單一訂單資訊
      *
-     * @return void
      */
     public function show($orderKey = null)
     {
@@ -89,7 +87,7 @@ class OrderController extends BaseController
             $data = [
                 "o_key"     => $orderEntity->o_key,
                 "u_key"     => $orderEntity->u_key,
-                "discount"  => $orderEntity->discount,
+                "ext_price"  => $orderEntity->ext_price,
                 "products"  => $orderProdcutsArr,
                 "createdAt" => $orderEntity->createdAt,
                 "updatedAt" => $orderEntity->updatedAt
@@ -105,10 +103,9 @@ class OrderController extends BaseController
     }
 
     /**
-     * [POST] /api/v1/order/order 
+     * [POST] /api/v1/order 
      * 產生訂單
      *
-     * @return void
      */
     public function create()
     {
@@ -116,17 +113,17 @@ class OrderController extends BaseController
         
         $u_key            = $this->u_key;
         $o_key            = $data["o_key"] ?? null;
-        $discount         = $data["discount"] ?? null ;
-        $productDetailArr = $data["productDetailArr"] ?? null;
+        /** @var array */
+        $productDetailArr = $data["product_detail"] ?? null;
 
-        if (is_null($o_key) || is_null($discount) || is_null($productDetailArr)) return $this->fail("請確認輸入資料", 404);
+        if (is_null($o_key) || is_null($productDetailArr)) return $this->fail("請確認輸入資料", 404);
 
         $orderEntity = OrderBusinessLogic::getOrder($o_key);
         if ($orderEntity) return $this->fail("訂單 key 重複輸入", 400);
 
         $orderModel = new OrderModel();
 
-        $orderCreatedTotalOrNull = $orderModel->createOrderTranscation($o_key,$u_key,$discount,$productDetailArr);
+        $orderCreatedTotalOrNull = $orderModel->createOrderTranscation($o_key,$u_key,$productDetailArr);
 
         if($orderCreatedTotalOrNull){
             return $this->respond([
@@ -139,49 +136,9 @@ class OrderController extends BaseController
     }
 
     /**
-     * [PUT] /api/v1/order/order 
-     * 更新訂單折扣
-     *  
-     * @return void
-     */
-    public function update()
-    {
-        $data = $this->request->getJSON(true);
-
-        $o_key            = $data["o_key"] ?? null;
-        $discount         = $data["discount"] ?? null;
-        $productDetailArr = $data["productDetailArr"] ?? null;
-
-        if(is_null($o_key)) return $this->fail("請傳入訂單 key",404);
-        if(is_null($discount) && is_null($productDetailArr)) return $this->fail("請傳入更改折扣或商品",404);
-
-        $orderModel = new OrderModel();
-        
-        $orderEntity = $orderModel->find($o_key);
-
-        if(is_null($orderEntity)) return $this->fail("查無此商品",404);
-
-        if(!is_null($productDetailArr)) $result = OrderProductBusinessLogic::update($o_key, $productDetailArr);
-
-        if(!is_null($discount)){
-            $orderEntity->discount = $discount;
-            $result = $orderModel->update($orderEntity->o_key,$orderEntity->toRawArray(true));
-        }
-
-        if($result){
-            return $this->respond([
-                "msg" => "OK"
-            ]);
-        }else{
-            return $this->fail("更新失敗",400);   
-        }
-    }
-
-    /**
      * [DELETE] /api/v1/order/order/{orderKey}
      *
      * @param  string $orderKey
-     * @return void
      */
     public function delete(string $orderKey = null)
     {

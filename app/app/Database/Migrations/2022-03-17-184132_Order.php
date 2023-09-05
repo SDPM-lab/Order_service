@@ -19,7 +19,7 @@ class Order extends Migration
                 'constraint'     => 5,
                 'unsigned'       => TRUE
             ],
-            'discount'           => [
+            'ext_price'           => [
                 'type'           => 'INT',
                 'constraint'     => 5,
                 'unsigned'       => TRUE

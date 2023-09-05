@@ -15,7 +15,7 @@ class OrderProductModel extends Model
     protected $returnType       = OrderProductEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['o_key','p_key','price'];
+    protected $allowedFields    = ['o_key','p_key','price', 'amount', 'ext_price'];
 
     // Dates
     protected $useTimestamps = true;
