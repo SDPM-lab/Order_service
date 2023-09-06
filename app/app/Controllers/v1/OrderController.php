@@ -49,6 +49,7 @@ class OrderController extends BaseController
         if($orders){
             foreach ($orders as $orderEntity) {
                 $orderData = [
+                    "o_key"     => $orderEntity->o_key,
                     "u_key"     => $orderEntity->u_key,
                     "ext_prive"  => $orderEntity->ext_price,
                     "createdAt" => $orderEntity->createdAt,
