@@ -120,7 +120,13 @@ class OrderController extends BaseController
         if (is_null($o_key) || is_null($productDetailArr)) return $this->fail("請確認輸入資料", 404);
 
         $orderEntity = OrderBusinessLogic::getOrder($o_key);
-        if ($orderEntity) return $this->fail("訂單 key 重複輸入", 400);
+        
+        if($orderEntity){
+            return $this->respond([
+                "msg" => "OK",
+                "total" => (int)$orderEntity->ext_price
+            ]);
+        }
 
         $orderModel = new OrderModel();
 
