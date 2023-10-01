@@ -62,8 +62,27 @@ class OrderModel extends Model
             "updated_at" => $now
         ];
 
+        $isOrderExist = false;
+        $findOrder = $this->db->table("order")
+                              ->where("o_key",$o_key)
+                              ->get()
+                              ->getFirstRow();
+        if($findOrder){
+            $isOrderExist = true;
+        }
+
         try {
             $this->db->transStart();
+
+            //if o_key is exist, force delete it
+            if($isOrderExist){
+                $this->db->table("order")
+                    ->where("o_key",$o_key)
+                    ->delete();
+                $this->db->table("order_product")
+                    ->where("o_key",$o_key)
+                    ->delete();
+            }
 
             $this->db->table("order")
                      ->insert($orderData);
